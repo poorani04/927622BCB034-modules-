@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Community Event Portal</title>
+  <!-- Google Fonts for better typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Base Styles & Reset ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #f5f7fa url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #222;
+      min-height: 100vh;
+    }
+    /* ========== Navigation ========== */
+    nav {
+      background: rgba(0, 123, 255, 0.9);
+      padding: 1em 0;
+      margin-bottom: 20px;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      gap: 2em;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a:focus { color: #ffd700; }
+    /* ========== Welcome Banner ========== */
+    #welcomeBanner {
+      background: #1976d2;
+      color: #fff;
+      padding: 1.5em;
+      text-align: center;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      font-size: 1.4em;
+    }
+    .highlight {
+      background: #fff3cd;
+      color: #856404;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    /* ========== Main Content ========== */
+    main {
+      max-width: 1100px;
+      margin: 0 auto 32px auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 2em 2em 1em 2em;
+    }
+    section { margin-bottom: 2em; }
+    h2 { margin-bottom: 1em; color: #1976d2; }
+    /* ========== Image Gallery ========== */
+    .gallery-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+    .gallery-table img.event-img {
+      width: 160px;
+      height: 100px;
+      object-fit: cover;
+      border: 3px solid #1976d2;
+      border-radius: 8px;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    .gallery-table img.event-img.enlarged { transform: scale(1.5); z-index: 10; }
+    .gallery-table caption {
+      caption-side: top;
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 0.5em;
+      color: #333;
+    }
+    /* ========== Event Registration Form ========== */
+    form#eventForm {
+      background: #e3f2fd;
+      padding: 1.5em;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto 2em auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+    form label { font-weight: bold; margin-bottom: 0.3em; }
+    form input, form select, form textarea {
+      padding: 0.6em;
+      border: 1px solid #90caf9;
+      border-radius: 5px;
+      font-size: 1em;
+      width: 100%;
+    }
+    form input:focus, form select:focus, form textarea:focus {
+      outline: 2px solid #1976d2;
+      border-color: #1976d2;
+    }
+    form button {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 0.8em 1.5em;
+      font-size: 1.1em;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    form button:hover { background: #125ea2; }
+    output { color: green; font-weight: bold; display: block; margin-top: 1em; }
+    .fee-display { color: #d32f2f; font-weight: bold; }
+    /* ========== Feedback Section ========== */
+    #feedbackSection {
+      background: #fffde7;
+      padding: 1.5em;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto 2em auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    #feedbackSection label { font-weight: bold; }
+    #feedbackSection input, #feedbackSection select, #feedbackSection textarea {
+      margin-bottom: 0.6em;
+      width: 100%;
+    }
+    #charCount { font-size: 0.95em; color: #1976d2; }
+    /* ========== Video Invite ========== */
+    #videoInvite {
+      text-align: center;
+      margin-bottom: 2em;
+    }
+    #videoStatus { color: #388e3c; font-weight: bold; margin-top: 0.5em; }
+    /* ========== Geolocation Section ========== */
+    #geoSection {
+      text-align: center;
+      margin: 2em 0;
+    }
+    #geoResult { margin-top: 1em; color: #1976d2; font-weight: bold; }
+    .error { color: #d32f2f; }
+    /* ========== Footer ========== */
+    footer {
+      background: #1976d2;
+      color: #fff;
+      text-align: center;
+      padding: 1em 0;
+      border-radius: 0 0 12px 12px;
+      font-size: 1em;
+      margin-top: 2em;
+    }
+    /* ========== Responsive ========== */
+    @media (max-width: 700px) {
+      main { padding: 1em; }
+      .gallery-table img.event-img { width: 100px; height: 70px; }
+      form#eventForm, #feedbackSection { padding: 1em; }
+    }
+  </style>
+  <script>
+    // ========== Event Registration Form Logic ==========
+    document.addEventListener('DOMContentLoaded', function() {
+      // Restore preferred event type
+      const eventTypeSelect = document.getElementById('eventType');
+      if (localStorage.getItem('preferredEventType')) {
+        eventTypeSelect.value = localStorage.getItem('preferredEventType');
+      }
+      // Save preference on change
+      eventTypeSelect.addEventListener('change', function() {
+        localStorage.setItem('preferredEventType', this.value);
+        // Show fee
+        const feeDisplay = document.getElementById('feeDisplay');
+        let fee = '';
+        switch(this.value) {
+          case 'music': fee = '₹200'; break;
+          case 'art': fee = '₹150'; break;
+          case 'sports': fee = '₹100'; break;
+          default: fee = '—';
+        }
+        feeDisplay.textContent = 'Event Fee: ' + fee;
+      });
+      // Show initial fee if already selected
+      eventTypeSelect.dispatchEvent(new Event('change'));
+
+      // Form submission
+      document.getElementById('eventForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('formOutput').value = "Thank you for registering, " + this.name.value + "!";
+        sessionStorage.setItem('formStarted', 'false');
+        return false;
+      };
+
+      // Mark form as started for beforeunload
+      document.getElementById('eventForm').addEventListener('input', function() {
+        sessionStorage.setItem('formStarted', 'true');
+      });
+
+      // Clear Preferences
+      document.getElementById('clearPrefs').onclick = function() {
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('Preferences cleared!');
+        eventTypeSelect.value = '';
+        document.getElementById('feeDisplay').textContent = '';
+      };
+    });
+
+    // ========== Feedback Section Logic ==========
+    function validatePhone(input) {
+      const val = input.value.trim();
+      if (val && !/^[6-9]\d{9}$/.test(val)) {
+        input.setCustomValidity('Enter a valid 10-digit Indian mobile number.');
+        input.reportValidity();
+      } else {
+        input.setCustomValidity('');
+      }
+    }
+    function countChars(textarea) {
+      document.getElementById('charCount').textContent = textarea.value.length + ' characters';
+    }
+
+    // ========== Image Gallery Double Click ==========
+    function enlargeImage(img) {
+      img.classList.toggle('enlarged');
+    }
+
+    // ========== Video Invite ==========
+    function videoReady() {
+      document.getElementById('videoStatus').textContent = "Video ready to play!";
+    }
+
+    // ========== Geolocation ==========
+    function findNearbyEvents() {
+      const result = document.getElementById('geoResult');
+      result.textContent = 'Locating...';
+      if (!navigator.geolocation) {
+        result.textContent = 'Geolocation is not supported by your browser.';
+        result.className = 'error';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          result.textContent = `Your coordinates: Latitude ${pos.coords.latitude.toFixed(4)}, Longitude ${pos.coords.longitude.toFixed(4)}`;
+          result.className = '';
+        },
+        function(err) {
+          if (err.code === 1) result.textContent = 'Permission denied.';
+          else if (err.code === 2) result.textContent = 'Position unavailable.';
+          else if (err.code === 3) result.textContent = 'Request timed out.';
+          else result.textContent = 'Unknown error.';
+          result.className = 'error';
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+    // ========== BeforeUnload Warning ==========
+    window.onbeforeunload = function(e) {
+      if (sessionStorage.getItem('formStarted') === 'true') {
+        return "You have an unfinished registration form. Are you sure you want to leave?";
+      }
+    };
+  </script>
+</head>
+<body>
+  <!-- ========== Navigation ========== -->
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="help.html" target="_blank" class="highlight">Help</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== Main Content ========== -->
+  <main>
+    <!-- Welcome Banner -->
+    <div id="welcomeBanner">
+      Welcome, <span class="highlight">Resident!</span>
+      <span style="color:red;font-weight:bold;">Special Offer: Register today and get 10% off!</span>
+    </div>
+
+    <!-- Home Section -->
+    <!-- Main -->
+    <section id="home">
+      <h2>Welcome to the Local Community Event Portal</h2>
+      <p>
+        Stay updated on events, register easily, and connect with your community.<br>
+        <span class="highlight">Browse events, check locations, and more!</span>
+      </p>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events">
+      <h2>Community Events Gallery</h2>
+      <!-- Image Gallery Table -->
+      <table class="gallery-table">
+        <caption>Snapshots from Past Events</caption>
+        <tr>
+          <td>
+            <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80"
+                 alt="Music Night"
+                 title="Music Night"
+                 class="event-img"
+                 ondblclick="enlargeImage(this)">
+            <div>Music Night</div>
+          </td>
+          <td>
+            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80"
+                 alt="Art Workshop"
+                 title="Art Workshop"
+                 class="event-img"
+                 ondblclick="enlargeImage(this)">
+            <div>Art Workshop</div>
+          </td>
+          <td>
+            <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
+                 alt="Sports Day"
+                 title="Sports Day"
+                 class="event-img"
+                 ondblclick="enlargeImage(this)">
+            <div>Sports Day</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
+                 alt="Food Festival"
+                 title="Food Festival"
+                 class="event-img"
+                 ondblclick="enlargeImage(this)">
+            <div>Food Festival</div>
+          </td>
+          <td>
+            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80"
+                 alt="Book Fair"
+                 title="Book Fair"
+                 class="event-img"
+                 ondblclick="enlargeImage(this)">
+            <div>Book Fair</div>
+          </td>
+          <td>
+            <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80"
+                 alt="Kids Talent Show"
+                 title="Kids Talent Show"
+                 class="event-img"
+                 ondblclick="enlargeImage(this)">
+            <div>Kids Talent Show</div>
+          </td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Event Registration Form -->
+    <section>
+      <h2>Register for an Event</h2>
+      <form id="eventForm" autocomplete="off">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Your Name" required autofocus>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="you@email.com" required>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+        <label for="eventType">Event Type:</label>
+        <select id="eventType" name="eventType" required>
+          <option value="">--Select Event--</option>
+          <option value="music">Music Night</option>
+          <option value="art">Art Workshop</option>
+          <option value="sports">Sports Day</option>
+        </select>
+        <span id="feeDisplay" class="fee-display"></span>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="3" placeholder="Any message for us?"></textarea>
+        <button type="submit" onclick="sessionStorage.setItem('formStarted','false')">Register</button>
+        <output id="formOutput"></output>
+      </form>
+      <button id="clearPrefs" style="margin:1em auto;display:block;">Clear Preferences</button>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedbackSection">
+      <h2>Event Feedback</h2>
+      <form onsubmit="return false;">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" maxlength="10" placeholder="10-digit mobile" onblur="validatePhone(this)">
+        <label for="feedbackEvent">Event:</label>
+        <select id="feedbackEvent" onchange="document.getElementById('feedbackFee').textContent='Fee: '+(this.value==='music'?'₹200':this.value==='art'?'₹150':this.value==='sports'?'₹100':'—');">
+          <option value="">--Select Event--</option>
+          <option value="music">Music Night</option>
+          <option value="art">Art Workshop</option>
+          <option value="sports">Sports Day</option>
+        </select>
+        <span id="feedbackFee" class="fee-display"></span>
+        <label for="feedbackMsg">Your Feedback:</label>
+        <textarea id="feedbackMsg" rows="3" placeholder="Type your feedback..." onkeyup="countChars(this)" onkeydown="countChars(this)"></textarea>
+        <span id="charCount">0 characters</span>
+        <button onclick="alert('Thank you for your feedback!')">Submit Feedback</button>
+      </form>
+    </section>
+
+    <!-- Video Invite -->
+    <section id="videoInvite">
+      <h2>Event Promo Video</h2>
+      <video width="320" height="180" controls oncanplay="videoReady()">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div id="videoStatus"></div>
+    </section>
+
+    <!-- Geolocation Section -->
+    <section id="geoSection">
+      <h2>Find Nearby Events</h2>
+      <button onclick="findNearbyEvents()">Find Nearby Events</button>
+      <div id="geoResult"></div>
+    </section>
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Local City Council | Powered by Community Portal
+  </footer>
+</body>
+</html>
